@@ -1,0 +1,21 @@
+name: decide
+version: "0.1"
+author: Erik Turzinski <erik.turzinski@gmail.com>
+about: What to do next!
+subcommands:
+  - new:
+      about: create a new project
+      args:
+        - NAME:
+            required: true
+            index: 1
+        - start_command:
+            short: s
+            long: start
+            required: false
+            takes_value: true
+            help: select a start command for your project
+  - remove:
+      about: remove a project
+      takes_value: true
+
