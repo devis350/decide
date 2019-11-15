@@ -6,17 +6,13 @@ extern crate directories;
 #[macro_use]
 extern crate lazy_static;
 
-use std::error::Error;
 use std::fs::File;
 use std::io::{Read, Write};
-use std::option::NoneError;
 use std::path::PathBuf;
 
 use clap::{App, ArgMatches};
 use directories::BaseDirs;
-use serde::de::Unexpected::Bytes;
 use serde::{Deserialize, Serialize};
-use toml::value;
 
 lazy_static! {
     static ref FILE_PATH: PathBuf = BaseDirs::new()
@@ -51,11 +47,22 @@ struct Storage {
 }
 
 impl Storage {
+    fn new() -> Self {
+        Self {
+            projects: vec![],
+            ideas: vec![],
+        }
+    }
+
     fn init() -> Self {
-        let mut file = File::open(PathBuf::from(&*FILE_PATH)).unwrap();
-        let mut string = String::new();
-        file.read_to_string(&mut string);
-        toml::from_str(string.as_ref()).unwrap()
+        match File::open(PathBuf::from(&*FILE_PATH)) {
+            Ok(mut file) => {
+                let mut string = String::new();
+                file.read_to_string(&mut string);
+                toml::from_str(string.as_ref()).unwrap()
+            }
+            Err(_) => Self::new(),
+        }
     }
 
     fn save(&self) {
