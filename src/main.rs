@@ -6,19 +6,17 @@ extern crate directories;
 #[macro_use]
 extern crate lazy_static;
 
+use clap::App;
+
 use crate::commands::{decide, list, new, remove};
 use crate::structs::Storage;
-use clap::App;
 
 mod commands;
 mod structs;
 
 fn main() {
-    let yaml = load_yaml!("./../cli.yaml");
-    let matches = App::from_yaml(yaml).get_matches();
-
     let mut storage = Storage::init();
-    match matches.subcommand() {
+    match App::from_yaml(load_yaml!("./../cli.yaml")).get_matches().subcommand() {
         ("new", Some(matches)) => new(matches, &mut storage),
         ("list", Some(_)) => list(&mut storage),
         ("remove", Some(matches)) => remove(matches, &mut storage),
