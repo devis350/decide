@@ -17,5 +17,10 @@ subcommands:
             help: select a start command for your project
   - remove:
       about: remove a project
-      takes_value: true
+      args:
+        - NAME:
+            required: true
+            index: 1
+  - list:
+      about: show all projects
 
