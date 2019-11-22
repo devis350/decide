@@ -2,21 +2,19 @@ use clap::ArgMatches;
 use rand::Rng;
 
 use crate::structs::{Project, Storage};
-use std::process::Command;
+use cmd_lib::run_cmd;
 
-pub fn decide(storage: &mut Storage) {
+pub fn decide(matches: &ArgMatches, storage: &mut Storage) {
     if storage.projects.len() > 0 {
         let index = rand::thread_rng().gen_range(0, storage.projects.len());
         let project = storage.projects.get(index).unwrap();
-        match &project.command {
-            Some(command)=>{
-                println!("toto:africa: open project with start_command");
-            },
-            None=> println!("Work on {}", project.name)
-        };
-    } else {
-        println!("you have nothing to work on :( / :)");
-    }
+        if matches.is_present("start") {
+            match &project.command {
+                Some(cmd) => { run_cmd(cmd).expect("start command failed"); }
+                None => println!("{} has no associated start command, non the less you should work on it", project.name)
+            }
+        } else { println!("Work on {}", project.name); }
+    } else { println!("you have nothing to work on :( / :)"); }
 }
 
 pub fn new(matches: &ArgMatches, storage: &mut Storage) {
@@ -24,7 +22,7 @@ pub fn new(matches: &ArgMatches, storage: &mut Storage) {
     if !storage.projects.iter().any(|p| p.name == project_name) {
         storage.projects.push(Project {
             name: project_name.clone(),
-            command: None,
+            command: matches.value_of("start_command").map(String::from),
         });
         println!("the project {} was added", project_name);
         storage.save();

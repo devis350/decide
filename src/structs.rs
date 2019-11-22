@@ -42,7 +42,7 @@ impl Storage {
 
     pub fn save(&self) {
         let mut file = File::create(PathBuf::from(&*FILE_PATH)).unwrap();
-        file.write_all(toml::to_string(self).unwrap().as_bytes())
+        file.write_all(dbg!(toml::to_string(self).unwrap()).as_bytes())
             .expect("couldn't write String to File");
     }
 }

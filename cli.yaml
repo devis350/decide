@@ -2,6 +2,12 @@ name: decide
 version: "0.1"
 author: Erik Turzinski <erik.turzinski@gmail.com>
 about: What to do next!
+args:
+  - start:
+      short: s
+      long: start
+      required: false
+      help: starts your project, if it has an associated start command
 subcommands:
   - new:
       about: create a new project
