@@ -5,6 +5,8 @@ use std::path::PathBuf;
 use directories::BaseDirs;
 use serde::{Deserialize, Serialize};
 
+use crate::error::Error;
+
 lazy_static! {
     static ref FILE_PATH: PathBuf = BaseDirs::new()
         .unwrap()
@@ -28,21 +30,20 @@ impl Storage {
         Self { projects: vec![] }
     }
 
-    pub fn init() -> Self {
-        match File::open(PathBuf::from(&*FILE_PATH)) {
+    pub fn init() -> Result<Self, Error> {
+        Ok(match File::open(PathBuf::from(&*FILE_PATH)) {
             Ok(mut file) => {
                 let mut string = String::new();
-                file.read_to_string(&mut string)
-                    .expect("couldn't read File to String");
-                toml::from_str(string.as_ref()).expect("config file structure is incorrect")
+                file.read_to_string(&mut string)?;
+                toml::from_str(string.as_ref())?
             }
             Err(_) => Self::new(),
-        }
+        })
     }
 
-    pub fn save(&self) {
-        let mut file = File::create(PathBuf::from(&*FILE_PATH)).unwrap();
-        file.write_all(dbg!(toml::to_string(self).unwrap()).as_bytes())
-            .expect("couldn't write String to File");
+    pub fn save(&self) -> Result<(), Error> {
+        let mut file = File::create(PathBuf::from(&*FILE_PATH))?;
+        file.write_all(toml::to_string(self)?.as_bytes())?;
+        Ok(())
     }
 }
