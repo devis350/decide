@@ -1,12 +1,33 @@
 use clap::ArgMatches;
+use cmd_lib::run_cmd;
 use rand::Rng;
+use toml::to_string;
 
 use crate::error::Error;
+use crate::structs;
 use crate::structs::{Project, Storage};
-use cmd_lib::run_cmd;
+
+pub fn edit(matches: &ArgMatches, storage: &mut Storage) -> Result<(), Error> {
+    let project_name = String::from(matches.value_of("NAME")?);
+    let project = storage.projects.iter().find(|p| p.name == project_name);
+
+    let t = Some(project?.name.clone());
+    let name = matches.value_of("rename").map(String::from);
+    let command = matches.value_of("command");
+
+    if project.is_some() {
+        let pr = project.unwrap();
+        if name.is_some() {
+            pr.nameol = name.unwrap();
+        }
+    }
+    Ok(())
+}
 
 pub fn decide(matches: &ArgMatches, storage: &mut Storage) -> Result<(), Error> {
-    if storage.projects.len() > 0 {
+    if storage.projects.is_empty() {
+        println!("you have nothing to work on :( / :)");
+    } else {
         let index = rand::thread_rng().gen_range(0, storage.projects.len());
         let project = storage.projects.get(index)?;
         if matches.is_present("start") {
@@ -22,23 +43,21 @@ pub fn decide(matches: &ArgMatches, storage: &mut Storage) -> Result<(), Error> 
         } else {
             println!("Work on {}", project.name);
         }
-    } else {
-        println!("you have nothing to work on :( / :)");
     }
     Ok(())
 }
 
 pub fn new(matches: &ArgMatches, storage: &mut Storage) -> Result<(), Error> {
     let project_name = String::from(matches.value_of("NAME")?);
-    if !storage.projects.iter().any(|p| p.name == project_name) {
+    if storage.projects.iter().any(|p| p.name == project_name) {
+        println!("the project {} already exists", project_name);
+    } else {
         storage.projects.push(Project {
             name: project_name.clone(),
             command: matches.value_of("start_command").map(String::from),
         });
         println!("the project {} was added", project_name);
         storage.save()?;
-    } else {
-        println!("the project {} already exists", project_name);
     }
     Ok(())
 }

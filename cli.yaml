@@ -6,9 +6,23 @@ args:
   - start:
       short: s
       long: start
-      required: false
       help: starts your project, if it has an associated start command
 subcommands:
+  - edit:
+      about: edit an existing project
+      args:
+        - name:
+            required: true
+            index: 1
+        - command:
+            short: c
+            long: command
+            required: false
+            takes_value: true
+        - rename:
+            short: r
+            long: rename
+            takes_value: true
   - new:
       about: create a new project
       args:
@@ -18,7 +32,6 @@ subcommands:
         - start_command:
             short: s
             long: start
-            required: false
             takes_value: true
             help: select a start command for your project
   - remove:
@@ -29,4 +42,12 @@ subcommands:
             index: 1
   - list:
       about: show all projects
-
+      args:
+        -len:
+          short: l
+          long: len
+          takes_value: true
+        -search:
+          short: s
+          long: search
+          takes_value: true
