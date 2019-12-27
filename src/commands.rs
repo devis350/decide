@@ -80,5 +80,9 @@ pub fn remove(matches: &ArgMatches, storage: &mut Storage) -> Result<(), Error> 
 }
 
 pub fn list(storage: &mut Storage) {
-    storage.projects.iter().for_each(|p| println!("{}", p.name));
+    if storage.projects.len() == 0 {
+        println!("There are no projects");
+    } else {
+        storage.projects.iter().for_each(|p| println!("{}", p.name));
+    }
 }
