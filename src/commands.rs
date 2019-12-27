@@ -67,7 +67,7 @@ pub fn remove(matches: &ArgMatches, storage: &mut Storage) -> Result<(), Error> 
     let mut found = false;
     storage.projects.retain(|x| {
         let matches = project_name != x.name;
-        found = found || matches;
+        found = found || !matches;
         matches
     });
     if found {
