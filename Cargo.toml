@@ -1,8 +1,11 @@
 [package]
 name = "decide"
 version = "0.1.0"
-authors = ["Turzinski, Erik"]
+authors = ["devis350"]
 edition = "2018"
+repository = "https://github.com/devis350/decide"
+license = "MIT OR Apache-2.0"
+description = "a cli tool, aimed to help you to decide, wich project to work on "
 
 [dependencies]
 clap = {version = "2.33.0", features = ["yaml"]}
