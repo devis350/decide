@@ -17,7 +17,6 @@ subcommands:
         - command:
             short: c
             long: command
-            required: false
             takes_value: true
         - rename:
             short: r

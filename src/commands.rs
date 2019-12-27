@@ -8,19 +8,19 @@ use crate::structs;
 use crate::structs::{Project, Storage};
 
 pub fn edit(matches: &ArgMatches, storage: &mut Storage) -> Result<(), Error> {
-    let project_name = String::from(matches.value_of("NAME")?);
-    let project = storage.projects.iter().find(|p| p.name == project_name);
+    let old_name = String::from(matches.value_of("name")?);
+    let mut project = storage.projects.iter().find(|p| p.name == old_name)?;
 
-    let t = Some(project?.name.clone());
-    let name = matches.value_of("rename").map(String::from);
-    let command = matches.value_of("command");
+    let new_name = matches.value_of("rename").map(String::from);
+    let new_command = matches.value_of("command").map(String::from);
 
-    if project.is_some() {
-        let pr = project.unwrap();
-        if name.is_some() {
-            pr.nameol = name.unwrap();
-        }
-    }
+    let new_project = Project {
+        name: new_name.unwrap_or(old_name),
+        command: new_command.or(project.command.clone()),
+    };
+
+    project = &new_project;
+
     Ok(())
 }
 
