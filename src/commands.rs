@@ -1,10 +1,8 @@
 use clap::ArgMatches;
 use cmd_lib::run_cmd;
 use rand::Rng;
-use toml::to_string;
 
 use crate::error::Error;
-use crate::structs;
 use crate::structs::{Project, Storage};
 
 pub fn edit(matches: &ArgMatches, storage: &mut Storage) -> Result<(), Error> {
