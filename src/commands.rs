@@ -7,18 +7,20 @@ use crate::structs::{Project, Storage};
 
 pub fn edit(matches: &ArgMatches, storage: &mut Storage) -> Result<(), Error> {
     let old_name = String::from(matches.value_of("name")?);
-    let mut project = storage.projects.iter().find(|p| p.name == old_name)?;
-
-    let new_name = matches.value_of("rename").map(String::from);
-    let new_command = matches.value_of("command").map(String::from);
-
-    let new_project = Project {
-        name: new_name.unwrap_or(old_name),
-        command: new_command.or(project.command.clone()),
-    };
-
-    project = &new_project;
-
+    storage.projects.iter_mut().for_each(|p| {
+        if p.name == old_name {
+            *p = dbg!(Project {
+                name: matches
+                    .value_of("rename")
+                    .map_or_else(|| old_name.clone(), String::from),
+                command: matches
+                    .value_of("command")
+                    .map(String::from)
+                    .or_else(|| p.command.clone()),
+            });
+        }
+    });
+    storage.save()?;
     Ok(())
 }
 

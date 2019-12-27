@@ -14,7 +14,7 @@ lazy_static! {
         .join("decision-cli.toml");
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Project {
     pub name: String,
     pub command: Option<String>,
